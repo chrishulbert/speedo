@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Speedo</title>
+</head>
+
+<body>
+  <div class="container">
+    <h1 id="text">Loading...</h1>
+  </div>
+</body>
+
+<script>
+document.addEventListener("DOMContentLoaded", myLoad)
+function myLoad() {
+  if ("geolocation" in navigator) {
+    watch()
+  } else {
+    display('Error: Your browser does not support Geolocation.')
+  }
+}
+function watch() {
+  const options = { enableHighAccuracy: true }
+  navigator.geolocation.watchPosition(onPosition, onError, options)
+}
+function onPosition(position) {
+  let speed = 'Speed unavailable.'
+  if (position.coords.speed) { // Speed is in m/sec.
+    speed = (position.coords.speed * 3600.0 / 1000.0).toFixed(1) + ' km/h'
+    if (position.coords.accuracy > 50) {
+      speed += ' (low accuracy)'
+    }
+  }
+  display(speed)
+}
+function onError(geolocationError) {
+  if (geolocationError.message) {
+    display('Error: ' + geolocationError.message)
+  } else if (geolocationError.code === 1) {
+    display('Permission denied.')
+  } else if (geolocationError.code === 2) {
+    display('Position unavailable.')
+  } else if (geolocationError.code === 3) {
+    display('Timeout.')
+  } else {
+    display('Unknown error.')
+  }
+}
+function display(message) {
+  document.getElementById('text').innerHTML = message
+}
+</script>
+
+<style>
+/* modern-normalize */
+*,::after,::before{box-sizing:border-box}html{font-family:system-ui,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji';line-height:1.15;-webkit-text-size-adjust:100%;tab-size:4}body{margin:0}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{border-color:currentcolor}button,input,optgroup,select,textarea{font-family:inherit;font-size:100%;line-height:1.15;margin:0}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}legend{padding:0}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}
+</style>
+
+<style>
+:root { /* Light mode colors */
+  --bg-color: white;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root { /* Dark mode */
+    --bg-color: black;
+  }
+}
+
+body {
+  background-color: var(--bg-color);
+  color: rebeccapurple;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+}
+</style>
+
+</html>
