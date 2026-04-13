@@ -9,7 +9,10 @@
 
 <body>
   <div class="container">
-    <h1 id="text">Loading...</h1>
+    <svg viewBox="0 0 100 100" preserveAspectRatio="xMinYMid meet">
+      <text id="text" x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" font-size="40" textLength="100" lengthAdjust="spacingAndGlyphs"></text>
+    </svg>
+    <p id="subtitle">Loading...</p>
   </div>
 </body>
 
@@ -19,7 +22,7 @@ function myLoad() {
   if ("geolocation" in navigator) {
     watch()
   } else {
-    display('Error: Your browser does not support Geolocation.')
+    display(null, 'Your browser does not support Geolocation.')
   }
 }
 function watch() {
@@ -27,30 +30,28 @@ function watch() {
   navigator.geolocation.watchPosition(onPosition, onError, options)
 }
 function onPosition(position) {
-  let speed = 'Speed unavailable.'
+  let speed = '?'
   if (position.coords.speed) { // Speed is in m/sec.
-    speed = (position.coords.speed * 3600.0 / 1000.0).toFixed(1) + ' km/h'
-    if (position.coords.accuracy > 50) {
-      speed += ' (low accuracy)'
-    }
+    speed = (position.coords.speed * 3600.0 / 1000.0).toFixed(1)
   }
-  display(speed)
+  display(speed, 'km/h')
 }
 function onError(geolocationError) {
   if (geolocationError.message) {
-    display('Error: ' + geolocationError.message)
+    display(null, geolocationError.message)
   } else if (geolocationError.code === 1) {
-    display('Permission denied.')
+    display(null, 'Permission denied.')
   } else if (geolocationError.code === 2) {
-    display('Position unavailable.')
+    display(null, 'Position unavailable.')
   } else if (geolocationError.code === 3) {
-    display('Timeout.')
+    display(null, 'Timeout.')
   } else {
-    display('Unknown error.')
+    display(null, 'Unknown error.')
   }
 }
-function display(message) {
-  document.getElementById('text').innerHTML = message
+function display(speed, subtitle) {
+  document.getElementById('text').innerHTML = speed
+  document.getElementById('subtitle').innerHTML = subtitle
 }
 </script>
 
@@ -62,17 +63,19 @@ function display(message) {
 <style>
 :root { /* Light mode colors */
   --bg-color: white;
+  --fg-color: black;
 }
 
 @media (prefers-color-scheme: dark) {
   :root { /* Dark mode */
     --bg-color: black;
+    --fg-color: white;
   }
 }
 
 body {
   background-color: var(--bg-color);
-  color: rebeccapurple;
+  color: var(--fg-color);
 }
 
 html, body {
@@ -81,13 +84,28 @@ html, body {
   padding: 0;
 }
 
+text {
+  fill: var(--fg-color);
+}
+
+svg {
+  flex: 1;
+}
+
+#subtitle {
+  font-size: 3rem;
+  text-align: center;
+  margin: 0;
+}
+
 .container {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: stretch;
   min-height: 100vh;
   width: 100%;
+  padding: 1rem;
 }
 </style>
 
