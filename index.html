@@ -27,12 +27,18 @@ function watch() {
   const options = { enableHighAccuracy: true }
   navigator.geolocation.watchPosition(onPosition, onError, options)
 }
+const speeds = []; // For a moving average.
 function onPosition(position) {
-  let speed = '?'
   if (position.coords.speed) { // Speed is in m/sec.
-    speed = (position.coords.speed * 3600.0 / 1000.0).toFixed(1)
+    const speed = (position.coords.speed * 3600.0 / 1000.0) // Convert to km/h.
+    // Add it to the moving average window:
+    speeds.push(speed);
+    while (speeds.length > 5) { speeds.shift() }
+    const average = speeds.reduce((sum, val) => sum + val, 0) / speeds.length;
+    display(average.toFixed(1), 'km/h')
+  } else {
+    display(null, 'No speed available.')
   }
-  display(speed, 'km/h')
 }
 function onError(geolocationError) {
   if (geolocationError.message) {
