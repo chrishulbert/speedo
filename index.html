@@ -9,9 +9,7 @@
 
 <body>
   <div class="container">
-    <svg viewBox="0 0 100 100" preserveAspectRatio="xMinYMid meet">
-      <text id="text" x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" font-size="40" textLength="100" lengthAdjust="spacingAndGlyphs"></text>
-    </svg>
+    <h1 id="speed"></h1>
     <p id="subtitle">Loading...</p>
   </div>
 </body>
@@ -38,6 +36,7 @@ function onPosition(position) {
 }
 function onError(geolocationError) {
   if (geolocationError.message) {
+    // display('123.4', 'km/h')
     display(null, geolocationError.message)
   } else if (geolocationError.code === 1) {
     display(null, 'Permission denied.')
@@ -50,7 +49,7 @@ function onError(geolocationError) {
   }
 }
 function display(speed, subtitle) {
-  document.getElementById('text').innerHTML = speed
+  document.getElementById('speed').innerHTML = speed
   document.getElementById('subtitle').innerHTML = subtitle
 }
 </script>
@@ -84,12 +83,10 @@ html, body {
   padding: 0;
 }
 
-text {
-  fill: var(--fg-color);
-}
-
-svg {
-  flex: 1;
+#speed {
+  text-align: center;
+  font-size: 8rem;
+  margin: 0;
 }
 
 #subtitle {
@@ -105,7 +102,7 @@ svg {
   align-items: stretch;
   min-height: 100vh;
   width: 100%;
-  padding: 1rem;
+  gap: 1rem;
 }
 </style>
 
